@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Crime Wave</string>
+
+    <string name="navigation_drawer_open">Open Navigation</string>
+    <string name="navigation_drawer_close">Close Navigation</string>
+    <string name="welcome_yagami">Welcome yagami</string>
+    <string name="byline">Always at your fingertips</string>
+    <string name="ForcesTitlw">Forces In UK</string>
+    <string name="crime_at_locationTittle">Crime At Location</string>
+
+
+</resources>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item android:id="@+id/forcepage"
+            android:icon="@mipmap/police"
+            android:title="See Forces" />
+        <item android:id="@+id/crimeatlocation"
+            android:title="Crimes at location"
+            android:icon="@mipmap/robber"/>
+        <item android:id="@+id/crimewithoutlocation"
+            android:title="Crime without location"
+            android:icon="@drawable/ic_map"/>
+         <item android:id="@+id/favorites"
+            android:title="Favorite"
+            android:icon="@drawable/ic_star"/>
+    </group>
+    <item android:title="More Info">
+        <menu>
+            <item android:id="@+id/website"
+                android:title="website"
+                android:icon="@drawable/ic_web"/>
+            <item android:id="@+id/lastupdate"
+                android:title="last Updated on "
+                android:icon="@drawable/ic_last_updated"/>
+        </menu>
+    </item>
+</menu>
