@@ -6,7 +6,44 @@
     <string name="welcome_yagami">Welcome yagami</string>
     <string name="byline">Always at your fingertips</string>
     <string name="ForcesTitlw">Forces In UK</string>
-    <string name="crime_at_locationTittle">Crime At Location</string>
+    <string name="crime_at_locationTittle">Search Crimes</string>
+    <string name="SearchCrime">Search Crimes</string>
+    <string name="FavoritesEmpty">Favorites page is empty \n search Crimes and swipe right to add them</string>
 
+    <string-array name="catogory_url">
+        <item>all-crime</item>
+        <item>anti-social-behaviour</item>
+        <item>bicycle-theft</item>
+        <item>burglary</item>
+        <item>criminal-damage-arson</item>
+        <item>drugs</item>
+        <item>possession-of-weapons</item>
+        <item>public-order</item>
+        <item>robbery</item>
+        <item>shoplifting</item>
+        <item>theft-from-the-person</item>
+        <item>vehicle-crime</item>
+        <item>violent-crime</item>
+        <item>other-theft</item>
+        <item>other-crime</item>
+    </string-array>
+
+    <string-array name="catogory_name">
+        <item>All crime</item>
+        <item>Anti-social behaviour</item>
+        <item>Bicycle theft</item>
+        <item>Burglary</item>
+        <item>Criminal damage and arson</item>
+        <item>Drugs</item>
+        <item>Possession of weapons</item>
+        <item>Public order</item>
+        <item>Robbery</item>
+        <item>Shoplifting</item>
+        <item>Theft from the person</item>
+        <item>Vehicle Crime</item>
+        <item>Violence and sexual offences</item>
+        <item>Other Theft</item>
+        <item>Other Crime</item>
+    </string-array>
 
 </resources>

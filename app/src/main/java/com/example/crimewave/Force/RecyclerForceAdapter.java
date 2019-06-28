@@ -1,10 +1,13 @@
 package com.example.crimewave.Force;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -32,8 +35,11 @@ public class RecyclerForceAdapter extends RecyclerView.Adapter<RecyclerForceAdap
 
     private ArrayList<ForcesBasic> Forces;
     private Context mContext;
+    private int detailsShowAt = -1;
+    private FragmentActivity activity;
 
-    public RecyclerForceAdapter(Context context, @Nullable ArrayList<ForcesBasic> forces) {
+    public RecyclerForceAdapter(Context context, @Nullable ArrayList<ForcesBasic> forces, FragmentActivity activity) {
+        this.activity = activity;
         Log.d(TAG, "RecyclerForceAdapter: constructr called with forces" + forces);
         Forces = forces;
         mContext = context;
@@ -54,43 +60,10 @@ public class RecyclerForceAdapter extends RecyclerView.Adapter<RecyclerForceAdap
         viewHolder.id = Forces.get(i).id;
         viewHolder.forceId.setText(viewHolder.id);
         viewHolder.forceName.setText(Forces.get(i).name);
-        viewHolder.forceCard.setTag(viewHolder);
-        if (viewHolder.isexpanded) {
-            viewHolder.forceExtraLayout.setVisibility(View.VISIBLE);
-        } else viewHolder.forceExtraLayout.setVisibility(View.GONE);
-        if(viewHolder.specificForce!=null) {
-            if (!viewHolder.id.equals(viewHolder.specificForce.id)) {
-                viewHolder.specificForce = null;
-                viewHolder.forceExtraLayout.setVisibility(View.GONE);
-            }
-        }
-        viewHolder.forceCard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ViewHolder holder = (ViewHolder) v.getTag();
-                Log.d(TAG, "onClick: " + holder.id);
-                if (holder.specificForce == null || !holder.id.equals(holder.specificForce.id)) {
-                    holder.loadingTxt.setVisibility(View.VISIBLE);
-                    holder.setSpecificForce(holder.id);
-                }
-                else if (holder.isexpanded) {
-                    holder.forceExtraLayout.setVisibility(View.GONE);
-                    holder.isexpanded = false;
-                    notifyDataSetChanged();
-                } else {
-                    holder.isexpanded = true;
-                    holder.forceExtraLayout.setVisibility(View.VISIBLE);
-                }
+        viewHolder.forceCard.setTag(i);
+        if(detailsShowAt==i)viewHolder.expand();
+        else viewHolder.forceExtraLayout.setVisibility(View.GONE);
 
-            }
-        });
-
-        viewHolder.forceUrl.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse((String) v.getTag())));
-            }
-        });
 
     }
 
@@ -100,7 +73,6 @@ public class RecyclerForceAdapter extends RecyclerView.Adapter<RecyclerForceAdap
         if (Forces == null) a = 0;
         else if (Forces.isEmpty()) a = 0;
         else a = Forces.size();
-        //Log.d(TAG, "getItemCount() returned: " + a);
         return a;
     }
 
@@ -132,10 +104,26 @@ public class RecyclerForceAdapter extends RecyclerView.Adapter<RecyclerForceAdap
             forceExtraLayout = itemView.findViewById(R.id.ForceExtra);
             forceExtraLayout.setVisibility(View.GONE);
             loadingTxt = itemView.findViewById(R.id.loadingtxt);
+
+            forceCard.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int curpos = Integer.parseInt(v.getTag().toString());
+                    if(detailsShowAt==curpos) {
+                        detailsShowAt = -1;
+                        notifyItemChanged(curpos);
+                    } else{
+                        int old = detailsShowAt;
+                        detailsShowAt = curpos;
+                        notifyItemChanged(old);
+                        notifyItemChanged(detailsShowAt);
+                    }
+                }
+            });
         }
 
-         void setSpecificForce(String Fid) {
-            if (specificForce == null || !Fid.equals(id)) {
+         private void setSpecificForce() {
+            if (specificForce == null) {
                 new GetForceAdapter().getSpecificForceCall(id).enqueue(new Callback<SpecificForce>() {
                     @Override
                     public void onResponse(Call<SpecificForce> call, Response<SpecificForce> response) {
@@ -156,12 +144,24 @@ public class RecyclerForceAdapter extends RecyclerView.Adapter<RecyclerForceAdap
                     public void onFailure(Call<SpecificForce> call, Throwable t) {
                         Toast.makeText(mContext,"cannot connect to server!!!",Toast.LENGTH_LONG).show();
                         loadingTxt.setVisibility(View.GONE);
-
+                        Snackbar.make(activity.findViewById(android.R.id.content),"Please check your connection",Snackbar.LENGTH_INDEFINITE)
+                                .setAction("RETRY", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        setSpecificForce();
+                                    }
+                                })
+                                .show();
                         Log.e(TAG, "onFailure: ", t);
                     }
                 });
 
             }
+        }
+
+        void expand(){
+            if(specificForce==null)setSpecificForce();
+            else forceExtraLayout.setVisibility(View.VISIBLE);
         }
 
          void setExtras() {
@@ -172,8 +172,21 @@ public class RecyclerForceAdapter extends RecyclerView.Adapter<RecyclerForceAdap
             if (specificForce.url != null) {
                 forceUrl.setText(specificForce.url);
                 forceUrl.setTag(specificForce.url);
+                forceUrl.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse((String) v.getTag())));
+                    }
+                });
             } else forceUrl.setText("Not Available");
             forceTel.setText(specificForce.telephone);
+            forceTel.setTag(specificForce.telephone);
+            forceTel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mContext.startActivity(new Intent(Intent.ACTION_DIAL,Uri.parse("tel:"+v.getTag().toString())));
+                }
+            });
             if (specificForce.engagement_methods != null && !specificForce.engagement_methods.isEmpty()) {
                 for (Engagement_Methord em : specificForce.engagement_methods) {
                     Log.i(TAG, "onBindViewHolder: found engagement methord");
@@ -201,11 +214,11 @@ public class RecyclerForceAdapter extends RecyclerView.Adapter<RecyclerForceAdap
                             default:
                                 continue;
                         }
-                        engageicon.setTooltipText(em.url);
+                        engageicon.setTag(em.url);
                         engageicon.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(v.getTooltipText().toString())));
+                                mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(v.getTag().toString())));
                             }
                         });
                         EngageMethordLayout.addView(engageicon);

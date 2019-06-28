@@ -96,29 +96,29 @@ public class Crime {
     }
 
     class Location{
-        double latitude;
-        double longitude;
+        String latitude;
+        String longitude;
         Street street;
 
-        public Location(double latitude, double longitude, Street street) {
+        public Location(String latitude, String longitude, Street street) {
             this.latitude = latitude;
             this.longitude = longitude;
             this.street = street;
         }
 
-        public double getLatitude() {
+        public String getLatitude() {
             return latitude;
         }
 
-        public void setLatitude(double latitude) {
+        public void setLatitude(String latitude) {
             this.latitude = latitude;
         }
 
-        public double getLongitude() {
+        public String getLongitude() {
             return longitude;
         }
 
-        public void setLongitude(double longitude) {
+        public void setLongitude(String longitude) {
             this.longitude = longitude;
         }
 
@@ -157,6 +157,7 @@ public class Crime {
     }
     class OutcomeStatus{
         String category;
+        String date;
 
         public String getCategory() {
             return category;
@@ -179,6 +180,6 @@ public class Crime {
             this.date = date;
         }
 
-        String date;
     }
+
 }

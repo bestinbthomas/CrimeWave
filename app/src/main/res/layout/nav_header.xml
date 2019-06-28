@@ -17,11 +17,13 @@
         android:layout_height="wrap_content"
         android:text="@string/welcome_yagami"
         android:textAllCaps="true"
+        android:fontFamily="@font/product_sans"
         android:textStyle="bold"
         android:textSize="16dp"
         android:paddingTop="8dp"/>
     <TextView
         android:layout_width="wrap_content"
+        android:fontFamily="@font/roboto_regular"
         android:layout_height="wrap_content"
         android:text="@string/byline"
         />

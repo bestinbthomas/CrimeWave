@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+>
+    <RelativeLayout
+        android:id="@+id/CrimeBackground"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorAccent">
+        <ImageView
+            android:id="@+id/FavIcon"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_star"
+            android:tint="@color/colorPrimary"
+            android:layout_centerVertical="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="25dp"/>
+        <TextView
+            android:id="@+id/FavText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="Add To Favorites"
+            android:layout_toEndOf="@+id/FavIcon"
+            android:layout_marginStart="10dp"
+            android:textSize="20sp"
+            android:textColor="@color/colorPrimary"
+            android:textStyle="bold"
+            android:fontFamily="@font/roboto_medium"/>
+    </RelativeLayout>
+    <android.support.v7.widget.CardView
+        android:id="@+id/CrimeForeground"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        android:layout_margin="@dimen/cardview_default_elevation">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/CrimeID"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_regular"
+                android:textSize="16sp"
+                android:text="ID : 3543848"
+                android:paddingHorizontal="10dp"/>
+            <TextView
+                android:id="@+id/CrimeDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Date : 2017-05"
+                android:layout_alignTop="@+id/CrimeID"
+                android:layout_alignParentEnd="true"
+                android:textSize="16sp"
+                android:paddingHorizontal="15dp"/>
+            <TextView
+                android:id="@+id/CrimeCategory"
+                style="@style/TextAppearance.AppCompat.Subhead"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_light"
+                android:textSize="22sp"
+                android:paddingHorizontal="15dp"
+                android:text="anti-social-behaviour"
+                android:layout_below="@+id/CrimeID"/>
+            <TextView
+                android:id="@+id/CrimeStreet"
+                style="@style/TextAppearance.AppCompat.Headline"
+                android:textSize="30sp"
+                android:paddingHorizontal="20dp"
+                android:fontFamily="@font/roboto_regular"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="On or near Park Prewett Road"
+                android:textAlignment="center"
+                android:layout_below="@+id/CrimeCategory"/>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:id="@+id/CrimeDetails"
+                android:layout_below="@+id/CrimeStreet"
+                android:visibility="gone">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/Pestantidlabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_regular"
+                        android:textSize="16sp"
+                        android:text="Persistant ID :"
+                        android:paddingHorizontal="10dp"/>
+                    <TextView
+                        android:id="@+id/CrimePersistantId"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_regular"
+                        android:textSize="16sp"
+                        android:singleLine="true"
+                        android:textIsSelectable="true"
+                        android:text="f63ffa385e23e8f5eaedbb07f2f6c6cb19496c2f8712744af70fa9acd2935d69"
+                        android:paddingHorizontal="10dp"
+                        android:layout_toEndOf="@+id/Pestantidlabel"
+                        android:layout_alignTop="@+id/Pestantidlabel"/>
+                    <TextView
+                        android:id="@+id/CrimeContext"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/Pestantidlabel"
+                        android:text="context : "
+                        android:paddingHorizontal="10dp"
+                        android:visibility="visible"
+                        android:textSize="17sp"
+                        />
+                    <TextView
+                        android:id="@+id/CrimeLocationType"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/CrimeContext"
+                        android:text="Location Type : Force"
+                        android:textSize="16sp"
+                        android:paddingHorizontal="10dp"/>
+                    <TextView
+                        android:id="@+id/CrimeLocationSubType"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="16sp"
+                        android:layout_below="@+id/CrimeLocationType"
+                        android:paddingHorizontal="10dp"
+                        android:text="Location SubType : sample"/>
+                    <TextView
+                        android:id="@+id/CrimeOutcomeStatusLabel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="16sp"
+                        android:layout_below="@+id/CrimeLocationSubType"
+                        android:paddingHorizontal="10dp"
+                        android:text="Outcome status :"/>
+                    <TextView
+                        android:id="@+id/CrimeOutcomeStatusCatogory"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="16sp"
+                        android:layout_below="@+id/CrimeOutcomeStatusLabel"
+                        android:paddingHorizontal="20dp"
+                        android:text="Further investigation is not in the public interest"/>
+                    <TextView
+                        android:id="@+id/CrimeOutcomeStatusDate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="16sp"
+                        android:layout_below="@+id/CrimeOutcomeStatusCatogory"
+                        android:paddingHorizontal="20dp"
+                        android:text="Date of outcome : 2017-06"/>
+                    <TextView
+                        android:id="@+id/CrimeOnMap"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="18sp"
+                        android:layout_below="@id/CrimeOutcomeStatusDate"
+                        android:drawableLeft="@drawable/ic_map"
+                        android:drawableTint="@android:color/darker_gray"
+                        android:layout_margin="20dp"
+                        android:layout_centerHorizontal="true"
+                        android:text="Show On Map"
+
+                        />
+
+                </RelativeLayout>
+            </android.support.v7.widget.CardView>
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+
+</FrameLayout>

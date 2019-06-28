@@ -1,9 +1,9 @@
 package com.example.crimewave.Force;
 
 
-import java.lang.reflect.Array;
+import com.example.crimewave.CommonApiAdapter;
+
 import java.util.ArrayList;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Retrofit;
@@ -15,7 +15,7 @@ public class GetForceAdapter {
 
     public GetForceAdapter() {
         retrofitAdapter = new Retrofit.Builder()
-                .baseUrl(GetForceInfo.FORCEURL)
+                .baseUrl(CommonApiAdapter.BASEURL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         mApi = retrofitAdapter.create(GetForceInfo.class);
@@ -32,8 +32,4 @@ public class GetForceAdapter {
 
     }
 
-    public Call<ArrayList<SeniorOfficer>> getSeniorOfficersCall(String ForceId){
-        return mApi.getSeniorOfficers(ForceId);
-
-    }
 }

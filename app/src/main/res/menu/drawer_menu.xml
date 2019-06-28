@@ -8,11 +8,11 @@
             android:icon="@mipmap/police"
             android:title="See Forces" />
         <item android:id="@+id/crimeatlocation"
-            android:title="Crimes at location"
+            android:title="See Crimes"
             android:icon="@mipmap/robber"/>
-        <item android:id="@+id/crimewithoutlocation"
+        <!--<item android:id="@+id/crimewithoutlocation"
             android:title="Crime without location"
-            android:icon="@drawable/ic_map"/>
+            android:icon="@drawable/ic_map"/>-->
          <item android:id="@+id/favorites"
             android:title="Favorite"
             android:icon="@drawable/ic_star"/>

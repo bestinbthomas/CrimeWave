@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     style="@style/Theme.AppCompat.Dialog.MinWidth"
     >
@@ -31,4 +31,12 @@
         </NumberPicker>
 
     </LinearLayout>
+    <TextView
+        android:id="@+id/MonthpickerWarning"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/holo_red_dark"
+        android:text="*Selected month out of bond \n*select a month from May 2016 to Apr 2019 \n*will be defaulted to Apr 2019"
+        android:layout_marginStart="10dp"
+        android:visibility="gone"/>
 </LinearLayout>
