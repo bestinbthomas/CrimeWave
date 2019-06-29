@@ -93,6 +93,7 @@ public class FavoriteCrimesFragment extends Fragment implements CrimeItemTouchHe
         while (cursor.moveToNext()){
             Gson gson = new Gson();
             Favcrimes.add(gson.fromJson(cursor.getString(1),Crime.class));
+            favCrimeRecyclerAdapter.refreshAdapter(Favcrimes);
             favCrimeRecyclerAdapter.notifyItemInserted(i++);
         }
         if(Favcrimes.isEmpty()) Favempty.setVisibility(View.VISIBLE);

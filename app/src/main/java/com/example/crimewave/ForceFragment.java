@@ -1,6 +1,7 @@
 package com.example.crimewave;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -20,8 +21,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.crimewave.Force.ForcesBasic;
+import com.example.crimewave.Force.ForcesDBHelper;
 import com.example.crimewave.Force.GetForceAdapter;
 import com.example.crimewave.Force.RecyclerForceAdapter;
+import com.example.crimewave.Force.SpecificForce;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
@@ -31,18 +35,21 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ForceFragment extends Fragment {
-    private static final String TAG = "ForceFragment";
-    private View fragview;
-    private ArrayList<ForcesBasic> forcelist, filteredlist;
-    private RecyclerView recyclerView;
-    private RecyclerForceAdapter recyclerForceAdapter;
-    private TextView tittle;
-    private EditText search;
-    private ImageView toggle;
-    private boolean isSearching = false;
-    private ViewGroup mContainer;
-    private InputMethodManager inputMethodManager;
+    private static final String        TAG = "ForceFragment";
+    private View                       fragview;
+    private ArrayList<ForcesBasic>     forcelist;
+    private ArrayList< SpecificForce > Spforcelist,filteredlist;
+    private RecyclerView               recyclerView;
+    private RecyclerForceAdapter       recyclerForceAdapter;
+    private TextView                   tittle;
+    private EditText                   search;
+    private ImageView                  toggle;
+    private boolean                    isSearching = false;
+    private ViewGroup                  mContainer;
+    private InputMethodManager         inputMethodManager;
     OpenFragment openFragment;
+    int getSpeccounter;
+    ForcesDBHelper forcesDBHelper;
 
     public void setOpenFragment(OpenFragment openFragment) {
         this.openFragment = openFragment;
@@ -51,32 +58,45 @@ public class ForceFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Snackbar.make(getActivity().findViewById(android.R.id.content),"Your favorite crimes are listed here",Snackbar.LENGTH_SHORT).show();
+        Spforcelist = new ArrayList <>();
         Log.d(TAG, "onCreateView: called");
         fragview = inflater.inflate(R.layout.fragment_force, container, false);
         filteredlist = new ArrayList<>();
         mContainer = container;
         inputMethodManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        getForces();
         recyclerView = fragview.findViewById(R.id.ForceRecyclerView);
-        recyclerForceAdapter = new RecyclerForceAdapter(getContext(), forcelist,getActivity());
+        recyclerForceAdapter = new RecyclerForceAdapter(getContext(), Spforcelist,getActivity());
         recyclerView.setAdapter(recyclerForceAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         tittle = fragview.findViewById(R.id.ForceTittle);
         search = fragview.findViewById(R.id.ForceSearch);
         toggle = fragview.findViewById(R.id.SearchToggle);
+        getSpeccounter = 0;
 
         search.setVisibility(View.GONE);
         tittle.setVisibility(View.VISIBLE);
+        forcesDBHelper = new ForcesDBHelper(getActivity());
+
+        getForces();
+
         return fragview;
     }
 
     void getForces(){
+        Snackbar.make(getActivity().findViewById(android.R.id.content),"Loading forces Please Wait",Snackbar.LENGTH_INDEFINITE).show();
+        Cursor cursor = forcesDBHelper.getAllFORCESCursor();
+        while (cursor.moveToNext()){
+            getSpeccounter++;
+            Gson gson = new Gson();
+            Spforcelist.add(gson.fromJson(cursor.getString(1),SpecificForce.class));
+            recyclerForceAdapter.showlist(Spforcelist);
+
+        }
         new GetForceAdapter().getForcesListCall().enqueue(new Callback<ArrayList<ForcesBasic>>() {
             @Override
             public void onResponse(Call<ArrayList<ForcesBasic>> call, Response<ArrayList<ForcesBasic>> response) {
                 forcelist = response.body();
-                recyclerForceAdapter.notifyDataSetChanged();
+                getSpecificForces();
 
             }
 
@@ -97,6 +117,38 @@ public class ForceFragment extends Fragment {
         });
     }
 
+    private void getSpecificForces(){
+        if(getSpeccounter>=forcelist.size()) {
+            Snackbar.make(getActivity().findViewById(android.R.id.content),"Done",Snackbar.LENGTH_SHORT).show();
+            return;
+        }
+        new GetForceAdapter().getSpecificForceCall(forcelist.get(getSpeccounter).getId()).enqueue(new Callback<SpecificForce>() {
+            @Override
+            public void onResponse(Call<SpecificForce> call, Response<SpecificForce> response) {
+                if(response.body()!=null) {
+                    Spforcelist.add(getSpeccounter++,response.body());
+                    forcesDBHelper.AddForcetoDB(response.body());
+                    recyclerForceAdapter.showlist(Spforcelist);
+                    getSpecificForces();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<SpecificForce> call, Throwable t) {
+                Snackbar.make(getActivity().findViewById(android.R.id.content),"Please check your connection",Snackbar.LENGTH_INDEFINITE)
+                        .setAction("RETRY", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                getSpecificForces();
+                            }
+                        })
+                        .show();
+                Log.e(TAG, "onFailure: ", t);
+            }
+        });
+    }
+
     @Override
     public void onStart() {
         super.onStart();
@@ -111,7 +163,7 @@ public class ForceFragment extends Fragment {
                     search.setVisibility(View.GONE);
                     inputMethodManager.hideSoftInputFromWindow(mContainer.getWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
                     toggle.setImageResource(R.drawable.ic_search);
-                    recyclerForceAdapter.showlist(forcelist);
+                    recyclerForceAdapter.showlist(Spforcelist);
                     isSearching = false;
                 } else {
                     tittle.setVisibility(View.GONE);
@@ -148,7 +200,7 @@ public class ForceFragment extends Fragment {
     private void filer(String name) {
         filteredlist = new ArrayList<>();
         Log.d(TAG, "filer: called");
-            for (ForcesBasic fb : forcelist) {
+            for (SpecificForce fb : Spforcelist) {
                 if (fb.getName().toLowerCase().contains(name.toLowerCase())) {
                     Log.d(TAG, "filer: added"+fb);
                     filteredlist.add(fb);

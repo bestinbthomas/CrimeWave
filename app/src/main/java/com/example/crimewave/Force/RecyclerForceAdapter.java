@@ -33,15 +33,16 @@ import retrofit2.Response;
 public class RecyclerForceAdapter extends RecyclerView.Adapter<RecyclerForceAdapter.ViewHolder> {
     private static final String TAG = "RecyclerForceAdapter";
 
-    private ArrayList<ForcesBasic> Forces;
+    private ArrayList<SpecificForce> SpForces;
     private Context mContext;
     private int detailsShowAt = -1;
     private FragmentActivity activity;
 
-    public RecyclerForceAdapter(Context context, @Nullable ArrayList<ForcesBasic> forces, FragmentActivity activity) {
+
+    public RecyclerForceAdapter(Context context, @Nullable ArrayList<SpecificForce> forces, FragmentActivity activity) {
         this.activity = activity;
         Log.d(TAG, "RecyclerForceAdapter: constructr called with forces" + forces);
-        Forces = forces;
+        SpForces = forces;
         mContext = context;
     }
 
@@ -57,27 +58,64 @@ public class RecyclerForceAdapter extends RecyclerView.Adapter<RecyclerForceAdap
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, int i) {
         //Log.d(TAG, "onBindViewHolder: called");
-        viewHolder.id = Forces.get(i).id;
-        viewHolder.forceId.setText(viewHolder.id);
-        viewHolder.forceName.setText(Forces.get(i).name);
+        viewHolder.setValues(SpForces.get(i));
         viewHolder.forceCard.setTag(i);
-        if(detailsShowAt==i)viewHolder.expand();
+        if(detailsShowAt==i)viewHolder.forceExtraLayout.setVisibility(View.VISIBLE);
         else viewHolder.forceExtraLayout.setVisibility(View.GONE);
 
+        if (SpForces.get(i).engagement_methods != null && !SpForces.get(i).engagement_methods.isEmpty() && !viewHolder.done) {
+            for (Engagement_Methord em : SpForces.get(i).engagement_methods) {
+                Log.i(TAG, "onBindViewHolder: found engagement methord for "+viewHolder.id);
+                if (em.url != null && em.type!=null) {
+                    ImageView engageicon = new ImageView(mContext);
+                    LinearLayout.LayoutParams engageparams = new LinearLayout.LayoutParams(70,70);
+                    engageparams.setMarginEnd(40);
+                    engageicon.setLayoutParams(engageparams);
+                    switch (em.type) {
+                        case "facebook":
+                            engageicon.setImageResource(R.mipmap.facebook);
+                            break;
+                        case "twitter":
+                            engageicon.setImageResource(R.mipmap.twitter);
+                            break;
+                        case "youtube":
+                            engageicon.setImageResource(R.mipmap.youtube);
+                            break;
+                        case "flickr":
+                            engageicon.setImageResource(R.mipmap.flickr);
+                            break;
+                        case "rss":
+                            engageicon.setImageResource(R.drawable.ic_web);
+                            break;
+                        default:
+                            continue;
+                    }
+                    engageicon.setTag(em.url);
+                    engageicon.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(v.getTag().toString())));
+                        }
+                    });
+                    viewHolder.EngageMethordLayout.addView(engageicon);
+                }
+            }
+            viewHolder.done = true;
+        }
 
     }
 
     @Override
     public int getItemCount() {
         int a;
-        if (Forces == null) a = 0;
-        else if (Forces.isEmpty()) a = 0;
-        else a = Forces.size();
+        if (SpForces == null) a = 0;
+        else if (SpForces.isEmpty()) a = 0;
+        else a = SpForces.size();
         return a;
     }
 
-    public void showlist(ArrayList<ForcesBasic> filteredlist) {
-        Forces = filteredlist;
+    public void showlist(ArrayList<SpecificForce> filteredlist) {
+        SpForces = filteredlist;
         notifyDataSetChanged();
     }
 
@@ -88,9 +126,9 @@ public class RecyclerForceAdapter extends RecyclerView.Adapter<RecyclerForceAdap
         TextView forceId, forceName, forceDesc, forceTel, forceUrl, loadingTxt;
         RelativeLayout forceExtraLayout;
         CardView forceCard;
-        SpecificForce specificForce;
         String id;
-        boolean isexpanded = false;
+        SpecificForce specificForce;
+        boolean done;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -103,7 +141,7 @@ public class RecyclerForceAdapter extends RecyclerView.Adapter<RecyclerForceAdap
             forceUrl = itemView.findViewById(R.id.ForceUrl);
             forceExtraLayout = itemView.findViewById(R.id.ForceExtra);
             forceExtraLayout.setVisibility(View.GONE);
-            loadingTxt = itemView.findViewById(R.id.loadingtxt);
+            done = false;
 
             forceCard.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -122,49 +160,16 @@ public class RecyclerForceAdapter extends RecyclerView.Adapter<RecyclerForceAdap
             });
         }
 
-         private void setSpecificForce() {
-            if (specificForce == null) {
-                new GetForceAdapter().getSpecificForceCall(id).enqueue(new Callback<SpecificForce>() {
-                    @Override
-                    public void onResponse(Call<SpecificForce> call, Response<SpecificForce> response) {
-                        if(response.body()!=null) {
-                            specificForce = response.body();
-                            setExtras();
-                            if(specificForce.id.equals(id)) {
-                                forceExtraLayout.setVisibility(View.VISIBLE);
-                                Log.i(TAG, "onResponse: "+specificForce.engagement_methods);
-                                isexpanded = true;
-                                loadingTxt.setVisibility(View.GONE);
-                            }
-                        }
 
-                    }
 
-                    @Override
-                    public void onFailure(Call<SpecificForce> call, Throwable t) {
-                        Toast.makeText(mContext,"cannot connect to server!!!",Toast.LENGTH_LONG).show();
-                        loadingTxt.setVisibility(View.GONE);
-                        Snackbar.make(activity.findViewById(android.R.id.content),"Please check your connection",Snackbar.LENGTH_INDEFINITE)
-                                .setAction("RETRY", new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        setSpecificForce();
-                                    }
-                                })
-                                .show();
-                        Log.e(TAG, "onFailure: ", t);
-                    }
-                });
 
-            }
-        }
+         void setValues(SpecificForce force) {
 
-        void expand(){
-            if(specificForce==null)setSpecificForce();
-            else forceExtraLayout.setVisibility(View.VISIBLE);
-        }
+            specificForce = force;
 
-         void setExtras() {
+             id = specificForce.getId();
+             forceId.setText(id);
+             forceName.setText(specificForce.getName());
 
             if (specificForce.description != null)
                 forceDesc.setText(Html.fromHtml(specificForce.description, Html.FROM_HTML_MODE_COMPACT));
@@ -187,44 +192,7 @@ public class RecyclerForceAdapter extends RecyclerView.Adapter<RecyclerForceAdap
                     mContext.startActivity(new Intent(Intent.ACTION_DIAL,Uri.parse("tel:"+v.getTag().toString())));
                 }
             });
-            if (specificForce.engagement_methods != null && !specificForce.engagement_methods.isEmpty()) {
-                for (Engagement_Methord em : specificForce.engagement_methods) {
-                    Log.i(TAG, "onBindViewHolder: found engagement methord");
-                    if (em.url != null && em.type!=null) {
-                        ImageView engageicon = new ImageView(mContext);
-                        LinearLayout.LayoutParams engageparams = new LinearLayout.LayoutParams(70,70);
-                        engageparams.setMarginEnd(40);
-                        engageicon.setLayoutParams(engageparams);
-                        switch (em.type) {
-                            case "facebook":
-                                engageicon.setImageResource(R.mipmap.facebook);
-                                break;
-                            case "twitter":
-                                engageicon.setImageResource(R.mipmap.twitter);
-                                break;
-                            case "youtube":
-                                engageicon.setImageResource(R.mipmap.youtube);
-                                break;
-                            case "flickr":
-                                engageicon.setImageResource(R.mipmap.flickr);
-                                break;
-                            case "rss":
-                                engageicon.setImageResource(R.drawable.ic_web);
-                                break;
-                            default:
-                                continue;
-                        }
-                        engageicon.setTag(em.url);
-                        engageicon.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(v.getTag().toString())));
-                            }
-                        });
-                        EngageMethordLayout.addView(engageicon);
-                    }
-                }
-            }
+
         }
     }
 }

@@ -52,6 +52,8 @@ public class CrimeFragment extends Fragment implements MonthPicker.sendMonthInte
     boolean isExpanded = false;
     boolean isForceSelected = false;
 
+    Snackbar loadsnack;
+
     //LatLng views
     CardView       LatLgnCard;
     RelativeLayout LatLngShowlayout;
@@ -112,6 +114,12 @@ public class CrimeFragment extends Fragment implements MonthPicker.sendMonthInte
 
     public void setOpenFragment(OpenFragment openFragment) {
         this.openFragment = openFragment;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        loadsnack = Snackbar.make(getActivity().findViewById(android.R.id.content),"Loading",Snackbar.LENGTH_INDEFINITE);
     }
 
     @Nullable
@@ -253,8 +261,10 @@ public class CrimeFragment extends Fragment implements MonthPicker.sendMonthInte
                 LatLngCrimes = response.body();
                 LatlngCrimeAdapter.refreshAdapter(response.body());
                 Log.d(TAG, "onResponse: latlngcrimes"+response.body());
-                if(response.body()!=null && !response.body().isEmpty())CrimeLatLngRecView.setVisibility(View.VISIBLE);
-                else {
+                if(response.body()!=null && !response.body().isEmpty()) {
+                    CrimeLatLngRecView.setVisibility(View.VISIBLE);
+                    loadsnack.dismiss();
+                } else {
                     Snackbar snackbar = Snackbar.make(getActivity().findViewById(android.R.id.content),"No crimes around here check elsewhere",Snackbar.LENGTH_SHORT);
                     snackbar.show();
                 }
@@ -280,8 +290,10 @@ public class CrimeFragment extends Fragment implements MonthPicker.sendMonthInte
                 LatLngCrimes = response.body();
                 LatlngCrimeAdapter.refreshAdapter(response.body());
                 Log.d(TAG, "onResponse: latlngcrimes"+response.body());
-                if(response.body()!=null && response.body().size()>1 && !response.body().isEmpty())CrimeLatLngRecView.setVisibility(View.VISIBLE);
-                else {
+                if(response.body()!=null && response.body().size()>1 && !response.body().isEmpty()) {
+                    CrimeLatLngRecView.setVisibility(View.VISIBLE);
+                    loadsnack.dismiss();
+                } else {
                     Snackbar snackbar = Snackbar.make(getActivity().findViewById(android.R.id.content),"No crimes around here check elsewhere",Snackbar.LENGTH_SHORT);
                     snackbar.show();
                 }
@@ -313,8 +325,10 @@ public class CrimeFragment extends Fragment implements MonthPicker.sendMonthInte
                         Log.d(TAG, "onResponse: from crimes at neighbourhood "+response.body());
                         NeighCrimeAdapter.refreshAdapter(NeighbourhoodCrimes);
                         Log.d(TAG, "onResponse: latlngcrimes"+response.body());
-                        if(response.body()!=null)CrimeNeighbourRecView.setVisibility(View.VISIBLE);
-                        else {
+                        if (response.body() != null) {
+                            CrimeNeighbourRecView.setVisibility(View.VISIBLE);
+                            loadsnack.dismiss();
+                        } else {
                             Snackbar snackbar = Snackbar.make(getActivity().findViewById(android.R.id.content),"No crimes in the selected Neighbourhood search in a different one",Snackbar.LENGTH_SHORT);
                             snackbar.show();
                         }
@@ -502,6 +516,7 @@ public class CrimeFragment extends Fragment implements MonthPicker.sendMonthInte
                     Log.d(TAG, "onClick: search latlng empty");
                 }
                 else {
+                    loadsnack.show();
                     if(isExpanded){
                         getCrimeAroundLatlng();
                     }
@@ -515,6 +530,7 @@ public class CrimeFragment extends Fragment implements MonthPicker.sendMonthInte
         NeighbourSearchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                loadsnack.show();
                 CrimeNeighbourRecView.setVisibility(View.GONE);
                 NeighbourhoodCrimes = null;
                 getCrimeInNeigh();

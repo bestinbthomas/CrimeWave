@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.transition.Fade;
+import android.transition.Slide;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
@@ -35,7 +36,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private FragmentManager fragmentManager;
-
+    ForceFragment forceFragment = new ForceFragment();
+    CrimeFragment crimeFragment = new CrimeFragment();
+    FavoriteCrimesFragment favoriteCrimesFragment = new FavoriteCrimesFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         fragmentManager = getSupportFragmentManager();
+
 
         new CommonApiAdapter().getLastUpdatedCall().enqueue(new Callback<lastUpdated>() {
             @Override
@@ -74,33 +78,36 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void openSeeForces(){
-        ForceFragment forceFragment = new ForceFragment();
-        forceFragment.setOpenFragment(MainActivity.this);
+
+        forceFragment.setAllowEnterTransitionOverlap(false);
         fragmentManager.beginTransaction()
-                .setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .replace(R.id.fragment_container,forceFragment)
+                .setCustomAnimations(R.anim.enter_from_right,R.anim.exit_to_left,R.anim.enter_from_left,R.anim.exit_to_right)
+                .replace(R.id.fragment_container,forceFragment,"ForceFragment")
                 .commit();
         navigationView.setCheckedItem(R.id.forcepage);
 
     }
     private void openSearchCrimes(){
 
-        CrimeFragment crimeFragment = new CrimeFragment();
+
         crimeFragment.setOpenFragment(MainActivity.this);
+        crimeFragment.setAllowEnterTransitionOverlap(false);
         fragmentManager.beginTransaction()
-                .setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .replace(R.id.fragment_container,crimeFragment)
+                .setCustomAnimations(R.anim.enter_from_right,R.anim.exit_to_left,R.anim.enter_from_left,R.anim.exit_to_right)
+                .replace(R.id.fragment_container,crimeFragment,"CrimeFragment")
+                .addToBackStack(null)
                 .commit();
         navigationView.setCheckedItem(R.id.crimeatlocation);
 
     }
     private void openFavorites(){
 
-        FavoriteCrimesFragment favoriteCrimesFragment = new FavoriteCrimesFragment();
         favoriteCrimesFragment.setOpenFragment(MainActivity.this);
+        favoriteCrimesFragment.setAllowEnterTransitionOverlap(false);
         fragmentManager.beginTransaction()
-                .setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .replace(R.id.fragment_container,favoriteCrimesFragment)
+                .setCustomAnimations(R.anim.enter_from_right,R.anim.exit_to_left,R.anim.enter_from_left,R.anim.exit_to_right)
+                .replace(R.id.fragment_container,favoriteCrimesFragment,"favoritesFragment")
+                .addToBackStack(null)
                 .commit();
         navigationView.setCheckedItem(R.id.favorites);
 

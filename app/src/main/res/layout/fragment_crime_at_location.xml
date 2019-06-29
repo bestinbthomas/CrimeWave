@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@android:color/white">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@android:color/white"
         android:orientation="vertical"
         android:paddingTop="8dp">
 
@@ -35,9 +37,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="30dp"
+                    android:fontFamily="@font/roboto_medium"
                     android:text="Search by Lattitude and Longitude"
                     android:textAlignment="center"
-                    android:fontFamily="@font/roboto_medium"
                     android:textSize="30sp"
                     android:textStyle="bold" />
 
@@ -148,9 +150,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="30dp"
+                    android:fontFamily="@font/roboto_medium"
                     android:text="Crimes at Neighbourhood"
                     android:textAlignment="center"
-                    android:fontFamily="@font/roboto_medium"
                     android:textSize="30sp"
                     android:textStyle="bold" />
 
@@ -164,48 +166,48 @@
                     <TextView
                         android:id="@+id/neighForceLabel"
                         android:layout_width="wrap_content"
-                        android:fontFamily="@font/roboto_regular"
                         android:layout_height="wrap_content"
-                        android:text="Choose Force :"
-                        android:layout_margin="10dp" />
+                        android:layout_margin="10dp"
+                        android:fontFamily="@font/roboto_regular"
+                        android:text="Choose Force :" />
 
                     <Spinner
                         android:id="@+id/pick_force"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:soundEffectsEnabled="true"
-                        android:spinnerMode="dialog"
                         android:layout_alignTop="@+id/neighForceLabel"
-                        android:layout_toEndOf="@+id/neighForceLabel"/>
+                        android:layout_toEndOf="@+id/neighForceLabel"
+                        android:soundEffectsEnabled="true"
+                        android:spinnerMode="dialog" />
 
                     <TextView
                         android:id="@+id/neighNeighLabel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Choose Neighbourhood :"
-                        android:layout_marginTop="15dp"
+                        android:layout_below="@+id/neighForceLabel"
                         android:layout_marginLeft="10dp"
+                        android:layout_marginTop="15dp"
                         android:fontFamily="@font/roboto_regular"
-                        android:layout_below="@+id/neighForceLabel"/>
+                        android:text="Choose Neighbourhood :" />
 
                     <Spinner
                         android:id="@+id/pick_Neighbourhood"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_alignTop="@+id/neighNeighLabel"
                         android:layout_toEndOf="@+id/neighNeighLabel"
                         android:soundEffectsEnabled="true"
-                        android:spinnerMode="dialog"
-                        android:layout_alignTop="@+id/neighNeighLabel"/>
+                        android:spinnerMode="dialog" />
+
                     <Spinner
                         android:id="@+id/NeighCat"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/pick_Neighbourhood"
-                        android:spinnerMode="dropdown"
-                        android:entries="@array/catogory_name"
                         android:layout_marginStart="30dp"
                         android:layout_marginTop="20dp"
-                        />
+                        android:entries="@array/catogory_name"
+                        android:spinnerMode="dropdown" />
 
                     <TextView
                         android:id="@+id/picker_month_Neighbour"
@@ -224,12 +226,12 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignTop="@+id/picker_month_Neighbour"
-                        android:background="@drawable/datepicker_back"
-                        android:padding="10dp"
-                        android:layout_marginHorizontal="20dp"
-                        android:layout_marginBottom="16dp"
                         android:layout_alignParentEnd="true"
                         android:layout_margin="10dp"
+                        android:layout_marginHorizontal="20dp"
+                        android:layout_marginBottom="16dp"
+                        android:background="@drawable/datepicker_back"
+                        android:padding="10dp"
                         android:soundEffectsEnabled="true"
                         android:text="Search crimes" />
 
