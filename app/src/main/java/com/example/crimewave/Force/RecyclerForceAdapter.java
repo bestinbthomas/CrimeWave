@@ -63,45 +63,6 @@ public class RecyclerForceAdapter extends RecyclerView.Adapter<RecyclerForceAdap
         if(detailsShowAt==i)viewHolder.forceExtraLayout.setVisibility(View.VISIBLE);
         else viewHolder.forceExtraLayout.setVisibility(View.GONE);
 
-        if (SpForces.get(i).engagement_methods != null && !SpForces.get(i).engagement_methods.isEmpty() && !viewHolder.done) {
-            for (Engagement_Methord em : SpForces.get(i).engagement_methods) {
-                Log.i(TAG, "onBindViewHolder: found engagement methord for "+viewHolder.id);
-                if (em.url != null && em.type!=null) {
-                    ImageView engageicon = new ImageView(mContext);
-                    LinearLayout.LayoutParams engageparams = new LinearLayout.LayoutParams(70,70);
-                    engageparams.setMarginEnd(40);
-                    engageicon.setLayoutParams(engageparams);
-                    switch (em.type) {
-                        case "facebook":
-                            engageicon.setImageResource(R.mipmap.facebook);
-                            break;
-                        case "twitter":
-                            engageicon.setImageResource(R.mipmap.twitter);
-                            break;
-                        case "youtube":
-                            engageicon.setImageResource(R.mipmap.youtube);
-                            break;
-                        case "flickr":
-                            engageicon.setImageResource(R.mipmap.flickr);
-                            break;
-                        case "rss":
-                            engageicon.setImageResource(R.drawable.ic_web);
-                            break;
-                        default:
-                            continue;
-                    }
-                    engageicon.setTag(em.url);
-                    engageicon.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(v.getTag().toString())));
-                        }
-                    });
-                    viewHolder.EngageMethordLayout.addView(engageicon);
-                }
-            }
-            viewHolder.done = true;
-        }
 
     }
 
@@ -122,7 +83,7 @@ public class RecyclerForceAdapter extends RecyclerView.Adapter<RecyclerForceAdap
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        LinearLayout EngageMethordLayout;
+        ImageView[] engageMethords = new ImageView[5];
         TextView forceId, forceName, forceDesc, forceTel, forceUrl, loadingTxt;
         RelativeLayout forceExtraLayout;
         CardView forceCard;
@@ -133,7 +94,11 @@ public class RecyclerForceAdapter extends RecyclerView.Adapter<RecyclerForceAdap
         ViewHolder(@NonNull View itemView) {
             super(itemView);
             forceCard = itemView.findViewById(R.id.ForceCard);
-            EngageMethordLayout = itemView.findViewById(R.id.ForceEngages);
+            engageMethords[0] = itemView.findViewById(R.id.engage1);
+            engageMethords[1] = itemView.findViewById(R.id.engage2);
+            engageMethords[2] = itemView.findViewById(R.id.engage3);
+            engageMethords[3] = itemView.findViewById(R.id.engage4);
+            engageMethords[4] = itemView.findViewById(R.id.engage5);
             forceId = itemView.findViewById(R.id.ForceID);
             forceName = itemView.findViewById(R.id.ForceName);
             forceDesc = itemView.findViewById(R.id.ForceDesc);
@@ -192,6 +157,49 @@ public class RecyclerForceAdapter extends RecyclerView.Adapter<RecyclerForceAdap
                     mContext.startActivity(new Intent(Intent.ACTION_DIAL,Uri.parse("tel:"+v.getTag().toString())));
                 }
             });
+
+             if (specificForce.engagement_methods != null && !specificForce.engagement_methods.isEmpty() ) {
+                 int e = 0;
+                 for (Engagement_Methord em : specificForce.engagement_methods) {
+                     Log.i(TAG, "onBindViewHolder: found engagement methord for "+id);
+                     if (em.url != null && em.type!=null) {
+                         switch (em.type) {
+                             case "facebook":
+                                 engageMethords[e].setVisibility(View.VISIBLE);
+                                 engageMethords[e].setImageResource(R.mipmap.facebook);
+                                 break;
+                             case "twitter":
+                                 engageMethords[e].setVisibility(View.VISIBLE);
+                                 engageMethords[e].setImageResource(R.mipmap.twitter);
+                                 break;
+                             case "youtube":
+                                 engageMethords[e].setVisibility(View.VISIBLE);
+                                 engageMethords[e].setImageResource(R.mipmap.youtube);
+                                 break;
+                             case "flickr":
+                                 engageMethords[e].setVisibility(View.VISIBLE);
+                                 engageMethords[e].setImageResource(R.mipmap.flickr);
+                                 break;
+                             case "rss":
+                                 engageMethords[e].setVisibility(View.VISIBLE);
+                                 engageMethords[e].setImageResource(R.drawable.ic_web);
+                                 break;
+                         }
+                         if(engageMethords[e].getVisibility() == View.VISIBLE) {
+                             engageMethords[e].setTag(em.url);
+                             engageMethords[e].setOnClickListener(new View.OnClickListener() {
+                                 @Override
+                                 public void onClick(View v) {
+                                     Log.d(TAG, "engage methord onClick: " + v.getTag());
+                                     mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(v.getTag().toString())));
+                                 }
+                             });
+                             e++;
+                         }
+                     }
+                 }
+                 done = true;
+             }
 
         }
     }
